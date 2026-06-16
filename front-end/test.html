@@ -99,22 +99,22 @@
 		</div>
 
 		<script type="importmap">
-		  {
-		    "imports": {
-		      "three": "https://unpkg.com",
-		      "three/addons/": "https://unpkg.com"
-		    }
-		  }
+			{
+				"imports": {
+					"three": "../build/three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
 		</script>
 
 		<script type="module">
 
 			import * as THREE from 'three';
 
-			import TWEEN from 'tween-module.js';
-			import { TrackballControls } from 'TrackballControls.js';
-			import { CSS3DRenderer, CSS3DObject } from 'CSS3DRenderer.js';
-
+			import TWEEN from 'three/addons/libs/tween.module.js';
+			import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+			import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+			
 			const table = [
 				'H', 'Hydrogen', '1.00794', 1, 1,
 				'He', 'Helium', '4.002602', 18, 1,
