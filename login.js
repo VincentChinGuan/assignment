@@ -16,7 +16,7 @@ function handleCredentialResponse(response) {
     localStorage.setItem("userEmail", userProfile.email);
     localStorage.setItem("userPicture", userProfile.picture);
 
-    window.location.href = "/dashboard.html";
+    window.location.href = "front-end/test.html";
         }
 
 window.onload = function () {
