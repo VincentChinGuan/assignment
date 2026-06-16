@@ -11,7 +11,6 @@ function parseJwt (token) {
 function handleCredentialResponse(response) {
         
     const userProfile = parseJwt(response.credential);
-    console.log(response.credential);
     localStorage.setItem("userName", userProfile.name);
     localStorage.setItem("userEmail", userProfile.email);
     localStorage.setItem("userPicture", userProfile.picture);
