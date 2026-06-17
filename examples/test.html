@@ -89,29 +89,19 @@
         
         	let mySavedData = null;
 
-			function getSpreadsheetId(url) {
-				const matches = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-				return matches ? matches[1] : null;
-			}
+			const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; 
+        	const TAB_NAME = 'Data Template'; 
 
-			function loadSheetData() {
-				const urlInput = document.getElementById('sheetUrl').value;
-				const spreadsheetId = getSpreadsheetId(urlInput);
-				console.login('Extracted Spreadsheet ID:', spreadsheetId);
-				if (!spreadsheetId) {
-					document.getElementById('status').innerText = 'Status: Invalid Google Sheet URL!';
-					return;
-				}
+			const apiUrl = `https://googleapis.com{SPREADSHEET_ID}/values/${TAB_NAME}?key=${API_KEY}`;
 
-				document.getElementById('status').innerText = 'Status: Fetching data...';
-
-				// We request the first sheet by default using 'Sheet1'
-				const apiUrl = `https://googleapis.com{spreadsheetId}/values/Sheet1?key=${API_KEY}`;
+			// 3. Automatically fetch the data when the page opens
+			window.addEventListener('DOMContentLoaded', () => {
+				const statusDiv = document.getElementById('status');
 
 				fetch(apiUrl)
 					.then(response => {
 						if (!response.ok) {
-							throw new Error('Network error or spreadsheet is not public.');
+							throw new Error('Could not fetch data. Check your ID, Key, or Sheet sharing rules.');
 						}
 						return response.json();
 					})
@@ -120,18 +110,18 @@
 							// STORE IN THING LATER TO USE IT
 							mySavedData = data.values;
 
-							document.getElementById('status').innerText = `Status: Success! Saved ${mySavedData.length} rows.`;
-							console.log('Your stored data:', mySavedData);
+							statusDiv.innerText = `Status: Success! Saved ${mySavedData.length} rows to "mySavedData".`;
+							console.log('Your stored data is ready:', mySavedData);
 						} else {
-							document.getElementById('status').innerText = 'Status: Sheet is empty.';
+							statusDiv.innerText = 'Status: Connected, but the sheet is empty.';
 						}
 					})
 					.catch(error => {
-						document.getElementById('status').innerText = `Status: Error - ${error.message}`;
+						statusDiv.innerText = `Status: Error - ${error.message}`;
 						console.error(error);
 					});
-					console.log(mySavedData);
-			}
+			});
+			console.log('Your stored data is ready:', mySavedData);
 		</script>
 
 	</head>
