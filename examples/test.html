@@ -89,7 +89,7 @@
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> css3d - periodic table.</div>
 		<div class="test">
 			<input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
-			<button id="loadSheet">Load Sheet</button>
+			<button id="loadSheet" onclick="loadSheetData()">Load Sheet</button>
 			<div id="status">Status: Waiting for input...</div>
 		</div>
 		<div id="container"></div>
@@ -130,11 +130,11 @@
 				const spreadsheetId = getSpreadsheetId(urlInput);
 
 				if (!spreadsheetId) {
-					statusDiv.innerText = 'Status: Invalid Google Sheet URL!';
+					document.getElementById('status').innerText = 'Status: Invalid Google Sheet URL!';
 					return;
 				}
 
-				statusDiv.innerText = 'Status: Fetching data...';
+				document.getElementById('status').innerText = 'Status: Fetching data...';
 
 				// We request the first sheet by default using 'Sheet1'
 				const apiUrl = `https://googleapis.com{spreadsheetId}/values/Sheet1?key=${API_KEY}`;
@@ -151,14 +151,14 @@
 							// STORE IN THING LATER TO USE IT
 							mySavedData = data.values;
 
-							statusDiv.innerText = `Status: Success! Saved ${mySavedData.length} rows.`;
+							document.getElementById('status').innerText = `Status: Success! Saved ${mySavedData.length} rows.`;
 							console.log('Your stored data:', mySavedData);
 						} else {
-							statusDiv.innerText = 'Status: Sheet is empty.';
+							document.getElementById('status').innerText = 'Status: Sheet is empty.';
 						}
 					})
 					.catch(error => {
-						statusDiv.innerText = `Status: Error - ${error.message}`;
+						document.getElementById('status').innerText = `Status: Error - ${error.message}`;
 						console.error(error);
 					});
 			}
