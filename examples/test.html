@@ -156,8 +156,6 @@
 						console.log("Table successfully populated! Total item count:", table.length); // Should print 1200
 
 						// 4. NOW that the array is full, start the 3D initialization functions!
-						init();
-						animate();
 
 					} catch (error) {
 						console.error('Error loading Google Sheet into table array:', error);
@@ -182,7 +180,8 @@
 				const objects = [];
 				const targets = { table: [], sphere: [], helix: [], grid: [] };
 				loadGoogleSheetData(); // Start loading data and initializing the 3D scene once data is ready
-
+				init();
+				animate();
 				function init() {
 
 				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
