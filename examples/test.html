@@ -83,56 +83,11 @@
 				background-color: rgba(0,255,255,0.75);
 			}
 		</style>
-		<script>
-
-			const API_KEY = "AIzaSyBrIhoJem3vuWa674mjIfeuQ1-uahG0_q4";
-        
-        	let mySavedData = null;
-
-			const SPREADSHEET_ID = '1sEM_RBHLENLtJU0fC_1QLc7MeVUZaVykiFyxnBA1c2Q'; 
-        	const TAB_NAME = 'Data Template'; 
-
-			const apiUrl = `https://googleapis.com{SPREADSHEET_ID}/values/${TAB_NAME}?key=${API_KEY}`;
-
-			// 3. Automatically fetch the data when the page opens
-			window.addEventListener('DOMContentLoaded', () => {
-				const statusDiv = document.getElementById('status');
-
-				fetch(apiUrl)
-					.then(response => {
-						if (!response.ok) {
-							throw new Error('Could not fetch data. Check your ID, Key, or Sheet sharing rules.');
-						}
-						return response.json();
-					})
-					.then(data => {
-						if (data.values) {
-							// STORE IN THING LATER TO USE IT
-							mySavedData = data.values;
-
-							statusDiv.innerText = `Status: Success! Saved ${mySavedData.length} rows to "mySavedData".`;
-							console.log('Your stored data is ready:', mySavedData);
-						} else {
-							statusDiv.innerText = 'Status: Connected, but the sheet is empty.';
-						}
-					})
-					.catch(error => {
-						statusDiv.innerText = `Status: Error - ${error.message}`;
-						console.error(error);
-					});
-			});
-			console.log('Your stored data is ready:', mySavedData);
-		</script>
 
 	</head>
 	<body>
 
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> css3d - periodic table.</div>
-		<div class="test">
-			<input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
-			<button id="loadSheet" onclick="loadSheetData()">Load Sheet</button>
-			<div id="status">Status: Waiting for input...</div>
-		</div>
 		<div id="container"></div>
 		<div id="menu">
 			<button id="table">TABLE</button>
@@ -157,133 +112,61 @@
 			import TWEEN from 'three/addons/libs/tween.module.js';
 			import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 			import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
-			
-
-			const table = [
-
-					'H', 'Hydrogen', '1.00794', 2, 1,
-					'He', 'Helium', '4.002602', 19, 1,
-					'Li', 'Lithium', '6.941', 2, 2,
-					'Be', 'Beryllium', '9.012182', 3, 2,
-					'B', 'Boron', '10.811', 14, 2,
-					'C', 'Carbon', '12.0107', 15, 2,
-					'N', 'Nitrogen', '14.0067', 16, 2,
-					'O', 'Oxygen', '15.9994', 17, 2,
-					'F', 'Fluorine', '18.9984032', 18, 2,
-					'Ne', 'Neon', '20.1797', 19, 2,
-					'Na', 'Sodium', '22.98976...', 2, 3,
-					'Mg', 'Magnesium', '24.305', 3, 3,
-					'Al', 'Aluminium', '26.9815386', 14, 3,
-					'Si', 'Silicon', '28.0855', 15, 3,
-					'P', 'Phosphorus', '30.973762', 16, 3,
-					'S', 'Sulfur', '32.065', 17, 3,
-					'Cl', 'Chlorine', '35.453', 18, 3,
-					'Ar', 'Argon', '39.948', 19, 3,
-					'K', 'Potassium', '39.948', 2, 4,
-					'Ca', 'Calcium', '40.078', 3, 4,
-					'Sc', 'Scandium', '44.955912', 4, 4,
-					'Ti', 'Titanium', '47.867', 5, 4,
-					'V', 'Vanadium', '50.9415', 6, 4,
-					'Cr', 'Chromium', '51.9961', 7, 4,
-					'Mn', 'Manganese', '54.938045', 8, 4,
-					'Fe', 'Iron', '55.845', 9, 4,
-					'Co', 'Cobalt', '58.933195', 10, 4,
-					'Ni', 'Nickel', '58.6934', 11, 4,
-					'Cu', 'Copper', '63.546', 12, 4,
-					'Zn', 'Zinc', '65.38', 13, 4,
-					'Ga', 'Gallium', '69.723', 14, 4,
-					'Ge', 'Germanium', '72.63', 15, 4,
-					'As', 'Arsenic', '74.9216', 16, 4,
-					'Se', 'Selenium', '78.96', 17, 4,
-					'Br', 'Bromine', '79.904', 18, 4,
-					'Kr', 'Krypton', '83.798', 19, 4,
-					'Rb', 'Rubidium', '85.4678', 2, 5,
-					'Sr', 'Strontium', '87.62', 3, 5,
-					'Y', 'Yttrium', '88.90585', 4, 5,
-					'Zr', 'Zirconium', '91.224', 5, 5,
-					'Nb', 'Niobium', '92.90628', 6, 5,
-					'Mo', 'Molybdenum', '95.96', 7, 5,
-					'Tc', 'Technetium', '(98)', 8, 5,
-					'Ru', 'Ruthenium', '101.07', 9, 5,
-					'Rh', 'Rhodium', '102.9055', 10, 5,
-					'Pd', 'Palladium', '106.42', 11, 5,
-					'Ag', 'Silver', '107.8682', 12, 5,
-					'Cd', 'Cadmium', '112.411', 13, 5,
-					'In', 'Indium', '114.818', 14, 5,
-					'Sn', 'Tin', '118.71', 15, 5,
-					'Sb', 'Antimony', '121.76', 16, 5,
-					'Te', 'Tellurium', '127.6', 17, 5,
-					'I', 'Iodine', '126.90447', 18, 5,
-					'Xe', 'Xenon', '131.293', 19, 5,
-					'Cs', 'Caesium', '132.9054', 2, 6,
-					'Ba', 'Barium', '132.9054', 3, 6,
-					'La', 'Lanthanum', '138.90547', 5, 9,
-					'Ce', 'Cerium', '140.116', 6, 9,
-					'Pr', 'Praseodymium', '140.90765', 7, 9,
-					'Nd', 'Neodymium', '144.242', 8, 9,
-					'Pm', 'Promethium', '(145)', 9, 9,
-					'Sm', 'Samarium', '150.36', 10, 9,
-					'Eu', 'Europium', '151.964', 11, 9,
-					'Gd', 'Gadolinium', '157.25', 12, 9,
-					'Tb', 'Terbium', '158.92535', 13, 9,
-					'Dy', 'Dysprosium', '162.5', 14, 9,
-					'Ho', 'Holmium', '164.93032', 15, 9,
-					'Er', 'Erbium', '167.259', 16, 9,
-					'Tm', 'Thulium', '168.93421', 17, 9,
-					'Yb', 'Ytterbium', '173.054', 18, 9,
-					'Lu', 'Lutetium', '174.9668', 19, 9,
-					'Hf', 'Hafnium', '178.49', 5, 6,
-					'Ta', 'Tantalum', '180.94788', 6, 6,
-					'W', 'Tungsten', '183.84', 7, 6,
-					'Re', 'Rhenium', '186.207', 8, 6,
-					'Os', 'Osmium', '190.23', 9, 6,
-					'Ir', 'Iridium', '192.217', 10, 6,
-					'Pt', 'Platinum', '195.084', 11, 6,
-					'Au', 'Gold', '196.966569', 12, 6,
-					'Hg', 'Mercury', '200.59', 13, 6,
-					'Tl', 'Thallium', '204.3833', 14, 6,
-					'Pb', 'Lead', '207.2', 15, 6,
-					'Bi', 'Bismuth', '208.9804', 16, 6,
-					'Po', 'Polonium', '(209)', 17, 6,
-					'At', 'Astatine', '(210)', 18, 6,
-					'Rn', 'Radon', '(222)', 19, 6,
-					'Fr', 'Francium', '(223)', 2, 7,
-					'Ra', 'Radium', '(226)', 3, 7,
-					'Ac', 'Actinium', '(227)', 5, 10,
-					'Th', 'Thorium', '232.03806', 6, 10,
-					'Pa', 'Protactinium', '231.0588', 7, 10,
-					'U', 'Uranium', '238.02891', 8, 10,
-					'Np', 'Neptunium', '(237)', 9, 10,
-					'Pu', 'Plutonium', '(244)', 10, 10,
-					'Am', 'Americium', '(243)', 11, 10,
-					'Cm', 'Curium', '(247)', 12, 10,
-					'Bk', 'Berkelium', '(247)', 13, 10,
-					'Cf', 'Californium', '(251)', 14, 10,
-					'Es', 'Einstenium', '(252)', 15, 10,
-					'Fm', 'Fermium', '(257)', 16, 10,
-					'Md', 'Mendelevium', '(258)', 17, 10,
-					'No', 'Nobelium', '(259)', 18, 10,
-					'Lr', 'Lawrencium', '(262)', 19, 10,
-					'Rf', 'Rutherfordium', '(267)', 5, 7,
-					'Db', 'Dubnium', '(268)', 6, 7,
-					'Sg', 'Seaborgium', '(271)', 7, 7,
-					'Bh', 'Bohrium', '(272)', 8, 7,
-					'Hs', 'Hassium', '(270)', 9, 7,
-					'Mt', 'Meitnerium', '(276)', 10, 7,
-					'Ds', 'Darmstadium', '(281)', 11, 7,
-					'Rg', 'Roentgenium', '(280)', 12, 7,
-					'Cn', 'Copernicium', '(285)', 13, 7,
-					'Nh', 'Nihonium', '(286)', 14, 7,
-					'Fl', 'Flerovium', '(289)', 15, 7,
-					'Mc', 'Moscovium', '(290)', 16, 7,
-					'Lv', 'Livermorium', '(293)', 17, 7,
-					'Ts', 'Tennessine', '(294)', 18, 7,
-					'Og', 'Oganesson', '(294)', 19, 7
-				];
 
 
+				const table = [];
+				const fs = require('fs');
+				const path = require('path');
+
+				const csvPath = path.join(__dirname, '..', 'backend', 'Data Template.csv');
+
+
+				try {
+					// Step 3: Read the raw CSV text data from the backend folder
+					const csvText = fs.readFileSync(csvPath, 'utf-8');
+
+					// Split text into rows and remove empty lines
+					const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
+
+					let htmlCards = '';
+
+					// Step 4: Loop through each row (skip header row 0)
+					for (let i = 1; i < lines.length; i++) {
+						const currentLine = lines[i].split(',');
+						const name = currentLine[0].trim();
+						const photo = currentLine[1].trim();
+						const age = currentLine[2].trim();
+						const country = currentLine[3].trim();
+						const interests = currentLine[4].trim();
+						const network = currentLine[5].trim();
+
+						table.push({
+							name: name,
+							photo: photo,
+							age: age,
+							country: country,
+							interests: interests,
+							network: network
+						});
+					}
+				} catch (error) {
+					console.error('Error reading CSV file:', error);
+				}
+
+				function colormatch(network) {
+					const test = network.replace("K","000").replace("$","");
+					if (test < 100000) {
+						return 'rgba(239,48,34,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+					} else if (test > 200000) {
+						return 'rgba(10,111,72,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+					} else {
+						return 'rgba(252,218,56,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+					}
+				}
 				let camera, scene, renderer;
 				let controls;
+
+
 
 				const objects = [];
 				const targets = { table: [], sphere: [], helix: [], grid: [] };
@@ -300,26 +183,33 @@
 
 				// table
 
-				for ( let i = 0; i < table.length; i += 5 ) {
+				for ( let i = 0; i < table.length; i += 6 ) {
 
 					const element = document.createElement( 'div' );
 					element.className = 'element';
-					element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+					element.style.backgroundColor = colormatch(table[i + 6]);
+
+					const country = document.createElement( 'div' );
+					country.className = 'country';
+					country.textContent = table[ i + 3 ];
+					element.appendChild( country );
 
 					const number = document.createElement( 'div' );
 					number.className = 'number';
-					number.textContent = ( i / 5 ) + 1;
+					number.textContent = table[ i + 2];
 					element.appendChild( number );
 
 					const symbol = document.createElement( 'div' );
 					symbol.className = 'symbol';
-					symbol.textContent = table[ i ];
+					symbol.src = table[ i + 1 ];
 					element.appendChild( symbol );
 
 					const details = document.createElement( 'div' );
 					details.className = 'details';
-					details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
+					details.innerHTML = table[ i  ] + '<br>' + table[ i + 4 ];
 					element.appendChild( details );
+
+					
 
 					const objectCSS = new CSS3DObject( element );
 					objectCSS.position.x = Math.random() * 4000 - 2000;
@@ -332,8 +222,8 @@
 					//
 
 					const object = new THREE.Object3D();
-					object.position.x = ( table[ i + 3 ] * 140 ) - 1470;
-					object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
+					object.position.x = ( ( ( i / 6 ) % 20 ) * 140 ) - 1330;
+    				object.position.y = - ( Math.floor( ( i / 6 ) / 20 ) * 180 ) + 810;
 
 					targets.table.push( object );
 
