@@ -115,6 +115,7 @@
 
 
 				const table = [];
+				loadCSVData();
 				async function loadCSVData() { 
 					const response = await fetch('Data Template.csv'); 
         			const csvText = await response.text();
