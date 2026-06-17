@@ -165,7 +165,7 @@
 				}
 
 				function colormatch(network) {
-					const test = network.replaceAll("$", "").replaceAll("K", "000");
+					const test = Number(network.replace("$", "").replace("K", "000"));
 					if (test < 100000) {
 						return 'rgba(239,48,34,' + ( Math.random() * 0.5 + 0.25 ) + ')';
 					} else if (test > 200000) {
