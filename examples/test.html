@@ -97,7 +97,7 @@
 			function loadSheetData() {
 				const urlInput = document.getElementById('sheetUrl').value;
 				const spreadsheetId = getSpreadsheetId(urlInput);
-
+				console.login('Extracted Spreadsheet ID:', spreadsheetId);
 				if (!spreadsheetId) {
 					document.getElementById('status').innerText = 'Status: Invalid Google Sheet URL!';
 					return;
