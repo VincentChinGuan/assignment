@@ -156,7 +156,8 @@
 						console.log("Table successfully populated! Total item count:", table.length); // Should print 1200
 
 						// 4. NOW that the array is full, start the 3D initialization functions!
-
+						init();
+						animate();
 					} catch (error) {
 						console.error('Error loading Google Sheet into table array:', error);
 					}
