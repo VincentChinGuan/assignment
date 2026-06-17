@@ -87,6 +87,11 @@
 	<body>
 
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> css3d - periodic table.</div>
+		<div class="test">
+			<input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
+			<button id="loadSheet">Load Sheet</button>
+			<div id="status">Status: Waiting for input...</div>
+		</div>
 		<div id="container"></div>
 		<div id="menu">
 			<button id="table">TABLE</button>
@@ -107,11 +112,58 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-
+			import {dotenv} from "https://cdn.jsdelivr.net/npm/dotenv@16.3.1/+esm";
+			dotenv.config();
 			import TWEEN from 'three/addons/libs/tween.module.js';
 			import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 			import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+			const API_KEY = process.env.API_key;
+        
+        	let mySavedData = null;
 
+			function getSpreadsheetId(url) {
+				const matches = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+				return matches ? matches[1] : null;
+			}
+
+			function loadSheetData() {
+				const urlInput = document.getElementById('sheetUrl').value;
+				const spreadsheetId = getSpreadsheetId(urlInput);
+
+				if (!spreadsheetId) {
+					statusDiv.innerText = 'Status: Invalid Google Sheet URL!';
+					return;
+				}
+
+				statusDiv.innerText = 'Status: Fetching data...';
+
+				// We request the first sheet by default using 'Sheet1'
+				const apiUrl = `https://googleapis.com{spreadsheetId}/values/Sheet1?key=${API_KEY}`;
+
+				fetch(apiUrl)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network error or spreadsheet is not public.');
+						}
+						return response.json();
+					})
+					.then(data => {
+						if (data.values) {
+							// STORE IN THING LATER TO USE IT
+							mySavedData = data.values;
+
+							statusDiv.innerText = `Status: Success! Saved ${mySavedData.length} rows.`;
+							console.log('Your stored data:', mySavedData);
+						} else {
+							statusDiv.innerText = 'Status: Sheet is empty.';
+						}
+					})
+					.catch(error => {
+						statusDiv.innerText = `Status: Error - ${error.message}`;
+						console.error(error);
+					});
+			}
+			console.log(mySavedData);
 			const table = [
 
 					'H', 'Hydrogen', '1.00794', 2, 1,

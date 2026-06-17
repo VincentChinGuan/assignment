@@ -1,3 +1,8 @@
+import { google } from "https://accounts.google.com/gsi/client";
+import {dotenv} from "https://cdn.jsdelivr.net/npm/dotenv@16.3.1/+esm";
+
+dotenv.config();
+
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -20,7 +25,7 @@ function handleCredentialResponse(response) {
 
 window.onload = function () {
     google.accounts.id.initialize({
-        client_id: "715062166189-7vv10mq414ileois6cqs13jg9prk4485.apps.googleusercontent.com", 
+        client_id: process.env.Client, 
         callback: handleCredentialResponse
     });
 
