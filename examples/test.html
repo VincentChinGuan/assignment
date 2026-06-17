@@ -165,7 +165,7 @@
 				}
 
 				function colormatch(network) {
-					const test = network.replace("K","000").replace("$","");
+					const test = network.replaceAll("$", "").replaceAll("K", "000");
 					if (test < 100000) {
 						return 'rgba(239,48,34,' + ( Math.random() * 0.5 + 0.25 ) + ')';
 					} else if (test > 200000) {
@@ -182,9 +182,6 @@
 				const objects = [];
 				const targets = { table: [], sphere: [], helix: [], grid: [] };
 				loadGoogleSheetData(); // Start loading data and initializing the 3D scene once data is ready
-
-				init();
-				animate();
 
 				function init() {
 
