@@ -115,42 +115,46 @@
 
 
 				const table = [];
-				import fs from 'fs';
-				import path from 'path';
+				async function loadCSVData() { 
+					const response = await fetch('Data Template.csv'); 
+        			const csvText = await response.text();
 
-				const csvPath = path.join(__dirname, '..', 'backend', 'Data Template.csv');
 
+					try {
+						// Step 3: Read the raw CSV text data from the backend folder
+						const csvText = fs.readFileSync(csvPath, 'utf-8');
 
-				try {
-					// Step 3: Read the raw CSV text data from the backend folder
-					const csvText = fs.readFileSync(csvPath, 'utf-8');
+						// Split text into rows and remove empty lines
+						const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
 
-					// Split text into rows and remove empty lines
-					const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
+						let htmlCards = '';
 
-					let htmlCards = '';
+						// Step 4: Loop through each row (skip header row 0)
+						for (let i = 1; i < lines.length; i++) {
+							const currentLine = lines[i].split(',');
+							if (currentLine.length < 6) continue;
+							const name = currentLine[0].trim();
+							const photo = currentLine[1].trim();
+							const age = currentLine[2].trim();
+							const country = currentLine[3].trim();
+							const interests = currentLine[4].trim();
+							const network = currentLine[5].trim();
 
-					// Step 4: Loop through each row (skip header row 0)
-					for (let i = 1; i < lines.length; i++) {
-						const currentLine = lines[i].split(',');
-						const name = currentLine[0].trim();
-						const photo = currentLine[1].trim();
-						const age = currentLine[2].trim();
-						const country = currentLine[3].trim();
-						const interests = currentLine[4].trim();
-						const network = currentLine[5].trim();
+							table.push({
+								name: name,
+								photo: photo,
+								age: age,
+								country: country,
+								interests: interests,
+								network: network
+							});
+						}
 
-						table.push({
-							name: name,
-							photo: photo,
-							age: age,
-							country: country,
-							interests: interests,
-							network: network
-						});
-					}
-				} catch (error) {
+						}
+				catch (error) {
 					console.error('Error reading CSV file:', error);
+				}
+			
 				}
 
 				function colormatch(network) {
