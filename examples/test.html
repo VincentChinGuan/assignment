@@ -395,9 +395,10 @@
 				renderer.render( scene, camera );
 
 			}
+			
 
 			loadGoogleSheetData().then (() => {
-				intit();
+				init();
 				animate();
 			}).catch(error => {
 				console.error("Error during data loading or scene initialization:", error);
