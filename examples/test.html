@@ -155,15 +155,13 @@
 						console.log("Table successfully populated! Total item count:", table.length); // Should print 1200
 
 						// 4. NOW that the array is full, start the 3D initialization functions!
-						init();
-						animate();
 					} catch (error) {
 						console.error('Error loading Google Sheet into table array:', error);
 					}
 				}
 
 				function colormatch(network) {
-					const test = Number(network.replace("$", "").replace("K", "000"));
+					const test = Number(network.replace("$", "").replace(",", ""));
 					console.log(typeof test , test);
 					if (test < 100000) {
 						return 'rgba(239,48,34,' + ( Math.random() * 0.5 + 0.25 ) + ')';
@@ -180,9 +178,7 @@
 
 				const objects = [];
 				const targets = { table: [], sphere: [], helix: [], grid: [] };
-				loadGoogleSheetData(); // Start loading data and initializing the 3D scene once data is ready
-				init();
-				animate();
+
 				function init() {
 
 				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -191,12 +187,14 @@
 				scene = new THREE.Scene();
 
 				// table
-
-				for ( let i = 0; i < table.length; i += 5 ) {
-
+			
+				for ( let i = 0; i < table.length; i += 6 ) {
+					
+					// name , photo , age , country , interests , network
+					console.log(table[i], table[i + 1], table[i + 2], table[i + 3], table[i + 4], table[i + 5]);
 					const element = document.createElement( 'div' );
 					element.className = 'element';
-					element.style.backgroundColor = colormatch(table[i + 6]);
+					element.style.backgroundColor = colormatch(table[i + 5]);
 
 					const country = document.createElement( 'div' );
 					country.className = 'country';
@@ -210,7 +208,7 @@
 
 					const symbol = document.createElement( 'div' );
 					symbol.className = 'symbol';
-					symbol.src = table[ i + 1 ];
+					symbol.style.backgroundImage = `url(${table[ i + 1 ]})`;
 					element.appendChild( symbol );
 
 					const details = document.createElement( 'div' );
@@ -398,6 +396,12 @@
 
 			}
 
+			loadGoogleSheetData().then (() => {
+				intit();
+				animate();
+			}).catch(error => {
+				console.error("Error during data loading or scene initialization:", error);
+			});
 		</script>
 	</body>
 </html>
