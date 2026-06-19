@@ -21,7 +21,7 @@ function handleCredentialResponse(response) {
 
 window.onload = function () {
     google.accounts.id.initialize({
-        client_id: process.env.Google_API || "process.env.Google_API",
+        client_id: process?.env?.NEXT_PUBLIC_GOOGLE_API ,
         callback: handleCredentialResponse
     });
 
