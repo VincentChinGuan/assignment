@@ -20,8 +20,11 @@ function handleCredentialResponse(response) {
         }
 
 window.onload = function () {
+    const res = await fetch('/api/get-google-id');
+    const data = await res.json();
+    const googleClientId = data.client_id;
     google.accounts.id.initialize({
-        client_id: process?.env?.NEXT_PUBLIC_GOOGLE_API ,
+        client_id: googleClientId  ,
         callback: handleCredentialResponse
     });
 
