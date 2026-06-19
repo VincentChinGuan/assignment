@@ -19,7 +19,7 @@ function handleCredentialResponse(response) {
     window.location.href = "examples/test.html";
         }
 
-window.onload = function () {
+window.onload = async function () {
     const res = await fetch('/api/get-google-id');
     const data = await res.json();
     const googleClientId = data.client_id;
